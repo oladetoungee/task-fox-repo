@@ -38,6 +38,7 @@ import {
 import { useModal } from '@/composables/useModal';
 import CategorySheet from './CategorySheet.vue';
 import CategoryDeleteDialog from './CategoryDeleteDialog.vue';
+import { formatDate } from '@/lib/dateUtils';
 
 const props = defineProps<{
   categories: Category[];
@@ -95,7 +96,7 @@ const columns: ColumnDef<Category>[] = [
     },
     cell: ({ row }) => {
       const date = new Date(row.getValue("created_at"))
-      return h("div", { class: "text-sm" }, date.toLocaleDateString())
+    return h("div", formatDate(date))
     },
   },
   {
@@ -198,7 +199,7 @@ const table = useVueTable({
             </TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
+        <TableBody class="text-xs">
           <template v-if="table.getRowModel().rows?.length">
             <TableRow
               v-for="row in table.getRowModel().rows"

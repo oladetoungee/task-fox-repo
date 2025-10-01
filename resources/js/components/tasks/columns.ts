@@ -4,8 +4,8 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-vue-next"
 import { h } from "vue"
 import { Task, Category } from "@/types"
 import { colorMap } from '@/constants/colors'
+import { dueTask, formatDate } from '@/lib/dateUtils'
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,21 +18,30 @@ interface TaskActions {
   editTask: (task: Task) => void;
   deleteTask: (task: Task) => void;
 }
+
 export const createTaskColumns = (actions: TaskActions): ColumnDef<Task>[] => [
   {
-    id: "select",
-    header: ({ table }) => h(Checkbox, {
-      "modelValue": table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate"),
-      "onUpdate:modelValue": value => table.toggleAllPageRowsSelected(!!value),
-      "ariaLabel": "Select all",
-    }),
-    cell: ({ row }) => h(Checkbox, {
-      "modelValue": row.getIsSelected(),
-      "onUpdate:modelValue": value => row.toggleSelected(!!value),
-      "ariaLabel": "Select row",
-    }),
+    id: "urgency",
+    header: "",
+    cell: ({ row }) => {
+      const dueDate = row.getValue("due_date") as string | null
+      
+      if (dueTask(dueDate)) {
+        return h("div", { 
+          class: "flex items-center justify-center"
+        }, [
+          h("div", {
+            class: "w-3 h-3 bg-red-500 rounded-full animate-pulse",
+            title: "Task is urgent (overdue or due within 2 days)"
+          })
+        ])
+      }
+      
+      return h("div", { class: "w-3 h-3" }) 
+    },
     enableSorting: false,
     enableHiding: false,
+    size: 40,
   },
   {
     accessorKey: "title",
@@ -62,9 +71,10 @@ export const createTaskColumns = (actions: TaskActions): ColumnDef<Task>[] => [
     },
     cell: ({ row }) => {
       const dueDate = row.getValue("due_date") as string | null
-      if (!dueDate) return h("div", { class: "text-muted-foreground" }, "No due date")
+      if (!dueDate) return h("div", { class: "text-muted-foreground text-sm" }, "No due date")
+      
       const date = new Date(dueDate)
-      return h("div", { class: "text-sm" }, date.toLocaleDateString())
+      return h("div", formatDate(date))
     },
   },
   {
@@ -113,7 +123,7 @@ export const createTaskColumns = (actions: TaskActions): ColumnDef<Task>[] => [
         h("div", {
           class: `w-2 h-2 rounded-full ${isComplete ? 'bg-green-500' : 'bg-yellow-500'}`
         }),
-        h("span", { class: "text-sm capitalize" }, status)
+        h("span", { class: "capitalize" }, status)
       ])
     },
   },
@@ -127,7 +137,7 @@ export const createTaskColumns = (actions: TaskActions): ColumnDef<Task>[] => [
     },
     cell: ({ row }) => {
       const date = new Date(row.getValue("created_at"))
-      return h("div", { class: "text-sm" }, date.toLocaleDateString())
+      return h("div", formatDate(date))
     },
   },
   {

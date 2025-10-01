@@ -103,7 +103,6 @@ const columns = createTaskColumns({
 const sorting = ref<SortingState>([])
 const columnFilters = ref<ColumnFiltersState>([])
 const columnVisibility = ref<VisibilityState>({})
-const rowSelection = ref({})
 const expanded = ref<ExpandedState>({})
 
 const table = useVueTable({
@@ -117,13 +116,11 @@ const table = useVueTable({
   onSortingChange: updaterOrValue => valueUpdater(updaterOrValue, sorting),
   onColumnFiltersChange: updaterOrValue => valueUpdater(updaterOrValue, columnFilters),
   onColumnVisibilityChange: updaterOrValue => valueUpdater(updaterOrValue, columnVisibility),
-  onRowSelectionChange: updaterOrValue => valueUpdater(updaterOrValue, rowSelection),
   onExpandedChange: updaterOrValue => valueUpdater(updaterOrValue, expanded),
   state: {
     get sorting() { return sorting.value },
     get columnFilters() { return columnFilters.value },
     get columnVisibility() { return columnVisibility.value },
-    get rowSelection() { return rowSelection.value },
     get expanded() { return expanded.value },
   },
 })
@@ -184,6 +181,9 @@ const handleExportCSV = () => {
          :model-value="table.getColumn('title')?.getFilterValue() as string"
          @update:model-value=" table.getColumn('title')?.setFilterValue($event)"
        />
+    </div>
+    
+    <div class="flex items-center py-2 gap-4">
        <DropdownMenu>
          <DropdownMenuTrigger as-child>
            <Button variant="outline" class="flex items-center gap-2">
@@ -262,10 +262,10 @@ const handleExportCSV = () => {
             </TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
+        <TableBody class="text-xs">
           <template v-if="table.getRowModel().rows?.length">
             <template v-for="row in table.getRowModel().rows" :key="row.id">
-              <TableRow :data-state="row.getIsSelected() && 'selected'">
+              <TableRow>
                 <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
                   <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
                 </TableCell>
@@ -292,8 +292,7 @@ const handleExportCSV = () => {
 
     <div class="flex items-center justify-between py-4">
       <div class="text-sm text-muted-foreground">
-        {{ table.getFilteredSelectedRowModel().rows.length }} of
-        {{ table.getFilteredRowModel().rows.length }} row(s) selected.
+        Showing {{ table.getFilteredRowModel().rows.length }} task(s).
       </div>
       <div class="flex items-center space-x-1">
         <button
