@@ -1,0 +1,108 @@
+<script setup lang="ts">
+import AuthenticatedSessionController from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
+import InputError from '@/components/InputError.vue';
+import TextLink from '@/components/TextLink.vue';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import AuthBase from '@/layouts/AuthLayout.vue';
+import { register } from '@/routes';
+import { request } from '@/routes/password';
+import { Form, Head } from '@inertiajs/vue3';
+import { LoaderCircle } from 'lucide-vue-next';
+
+defineProps<{
+    status?: string;
+    canResetPassword: boolean;
+}>();
+</script>
+
+<template>
+    <AuthBase
+        title="Let's sign you in"
+        description=""
+    >
+        <Head title="Log in" />
+
+        <div
+            v-if="status"
+            class="mb-4 text-center text-sm font-medium text-green-600"
+        >
+            {{ status }}
+        </div>
+
+        <Form
+            v-bind="AuthenticatedSessionController.store.form()"
+            :reset-on-success="['password']"
+            v-slot="{ errors, processing }"
+            class="flex flex-col gap-6"
+        >
+            <div class="grid gap-6">
+                <div class="grid gap-2">
+                    <Input
+                        id="email"
+                        type="email"
+                        name="email"
+                        required
+                        autofocus
+                        :tabindex="1"
+                        autocomplete="email"
+                        placeholder="Email Address"
+                    />
+                    <InputError :message="errors.email" />
+                </div>
+
+                <div class="grid gap-2">
+                    
+                    <Input
+                        id="password"
+                        type="password"
+                        name="password"
+                        required
+                        :tabindex="2"
+                        autocomplete="current-password"
+                        placeholder="Password"
+                    />
+                    <InputError :message="errors.password" />
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <Label for="remember" class="flex items-center space-x-3">
+                        <Checkbox id="remember" name="remember" :tabindex="3" class="border-foreground"/>
+                        <span>Remember me</span>
+                    </Label>
+                    <div class="flex items-center justify-between">
+                        <TextLink
+                            v-if="canResetPassword"
+                            :href="request()"
+                            class="text-xs"
+                            :tabindex="5"
+                        >
+                            Forgot password?
+                        </TextLink>
+                    </div>
+                </div>
+                <div class="text-xs text-muted-foreground">
+                Don't have an account?
+                <TextLink :href="register()" :tabindex="5">Sign up</TextLink>
+            </div>
+                <Button
+                    type="submit"
+                    class="mt-4 w-full"
+                    :tabindex="4"
+                    :disabled="processing"
+                    data-test="login-button"
+                >
+                    <LoaderCircle
+                        v-if="processing"
+                        class="h-4 w-4 animate-spin"
+                    />
+                    Log in
+                </Button>
+            </div>
+
+          
+        </Form>
+    </AuthBase>
+</template>
