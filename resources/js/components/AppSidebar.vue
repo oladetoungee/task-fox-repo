@@ -10,7 +10,6 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
 import tasks from '@/routes/tasks';
 import categories from '@/routes/categories';
 import { edit } from '@/routes/profile';
@@ -59,7 +58,7 @@ const handleLogout = () => {
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child class="flex flex-col items-center justify-center p-4 mb-2">
-                        <Link :href="dashboard()" class="hover:bg-transparent hover:text-inherit">
+                        <Link :href="tasks.index()" class="hover:bg-transparent hover:text-inherit">
                         <div class="mb-1 flex h-9 w-9 items-center justify-center rounded-md">
                             <AppLogoIcon class="size-9 fill-current text-[var(--foreground)] dark:text-white" />
                         </div>
@@ -74,7 +73,7 @@ const handleLogout = () => {
         </SidebarContent>
         <SidebarFooter>
       
-            <div class="mt-2">
+            <div class="mt-2 px-1 space-y-2">
                 <Link
                     :href="logout()"
                     @click="handleLogout"
@@ -84,10 +83,11 @@ const handleLogout = () => {
                     <LogOut class="h-4 w-4" />
                     <span class="group-data-[collapsible=icon]:hidden">Log out</span>
                 </Link>
-            </div>
+       
             <div class="flex items-center gap-2 rounded-md px-3 py-2 text-sm">
                 <UserInfo :user="user" />
             </div>
+                 </div>
         </SidebarFooter>
     </Sidebar>
     <slot />
