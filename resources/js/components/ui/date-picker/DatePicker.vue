@@ -5,6 +5,7 @@ import {
   getLocalTimeZone,
   parseDate,
   today,
+  CalendarDate,
 } from "@internationalized/date"
 import { CalendarIcon } from "lucide-vue-next"
 
@@ -88,8 +89,7 @@ const handleDateSelect = (selectedDate: DateValue | undefined) => {
     </PopoverTrigger>
     <PopoverContent class="w-auto p-0">
       <Calendar 
-        v-model="dateValue" 
-        @update:modelValue="handleDateSelect"
+        @update:model-value="handleDateSelect"
         initial-focus 
       />
     </PopoverContent>

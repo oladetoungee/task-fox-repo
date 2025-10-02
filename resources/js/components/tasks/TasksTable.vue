@@ -168,7 +168,7 @@ const handleExportCSV = () => {
       </div>
       <button
         @click="handleExportCSV"
-        class="text-muted-foreground hover:text-foreground underline cursor-pointer"
+        class="text-muted-foreground hover:text-foreground underline cursor-pointer text-xs"
       >
         Export as CSV
       </button>
@@ -176,7 +176,7 @@ const handleExportCSV = () => {
 
     <div class="flex items-center py-4 gap-4">
        <Input
-         class="max-w-sm"
+         class="max-w-sm py-1"
          placeholder="Filter tasks..."
          :model-value="table.getColumn('title')?.getFilterValue() as string"
          @update:model-value=" table.getColumn('title')?.setFilterValue($event)"

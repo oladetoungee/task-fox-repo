@@ -158,7 +158,7 @@ const table = useVueTable({
   <div class="w-full">
     <div class="flex items-center py-4 gap-4">
       <Input
-        class="max-w-sm"
+        class="max-w-sm py-1"
         placeholder="Filter categories..."
         :model-value="table.getColumn('name')?.getFilterValue() as string"
         @update:model-value="table.getColumn('name')?.setFilterValue($event)"
